@@ -56,7 +56,6 @@ def show_centrality_comparison(G_un, G):
 def show_cluster_visualization():
     st.markdown("### 🔍 Selecione o cluster:")
 
-
     grafo_dir = "data/htmls"
     arquivos_html = sorted([f for f in os.listdir(grafo_dir) if f.startswith("grafo_cluster_")])
 

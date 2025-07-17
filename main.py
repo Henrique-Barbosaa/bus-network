@@ -4,20 +4,36 @@ from analysis.metrics import compute_all_metrics
 from analysis.visualizations import show_metrics_dashboard, show_degree_histogram, show_centrality_comparison, show_cluster_visualization
 
 st.set_page_config(layout="wide")
-st.title("🚌 Análise de Redes - Cidades por Ônibus (ANTT)")
+st.title("🚌 Conexões entre Cidades via Ônibus Rodoviário no Brasil")
 
 G = load_graph("data/grafo.gexf")
 G_weak = get_largest_weakly_connected(G)
 G_un = get_undirected_connected(G)
 
-st.markdown("## 🌐 Sobre o Grafo")
+
 st.markdown("""
-Este dataset representa fluxos de passageiros de ônibus entre cidades brasileiras.
-- **Nós**: cidades envolvidas.
-- **Arestas**: relações de viagem entre cidades.
-Para métricas específicas, usamos:
-  - **Grafo fraco (mantém direção)** → componentes fortemente/fracamente conectados.
-  - **Grafo não direcionado** → matriz de adjacência, densidade, diâmetro, centralidades, clustering, etc.
+## ℹ️ Sobre o Dataset e a Análise
+
+Este projeto analisa a rede de conexões entre cidades brasileiras a partir de dados disponibilizados pela **ANTT (Agência Nacional de Transportes Terrestres)**. O dataset utilizado contém registros de **viagens interestaduais de ônibus**, representando o fluxo de passageiros entre diferentes municípios do Brasil.
+
+### 📌 Estrutura da Rede
+- **Nós**: Cada nó representa uma **cidade brasileira** que está envolvida em pelo menos uma rota de ônibus interestadual.
+- **Arestas**: Cada aresta indica a existência de **viagem direta entre duas cidades**, conforme registrado nas autorizações da ANTT. A direção da aresta representa o **sentido da viagem** (origem → destino).
+
+### 🔍 Objetivo da Análise
+Nosso objetivo é compreender as propriedades estruturais dessa rede de mobilidade interurbana, explorando conceitos fundamentais da teoria de grafos e análise de redes complexas. Com isso, podemos responder a perguntas como:
+- Quais cidades são mais conectadas e centrais?
+- Existem agrupamentos regionais (comunidades)?
+- Como é a distribuição de conectividade entre os municípios?
+- A rede é coesa ou fragmentada?
+
+### 🧭 Tipos de Grafos Utilizados
+Para diferentes análises, usamos duas representações do grafo:
+
+- **Grafo Direcionado (Original)**: mantém o sentido das viagens (útil para componentes fortemente e fracamente conectados).
+- **Grafo Não Direcionado**: ignora a direção das viagens (útil para cálculos como **diâmetro**, **densidade**, **centralidade**, **clustering**, etc).
+
+A análise contempla tanto medidas de conectividade quanto centralidade, além de visualizações interativas para explorar os agrupamentos regionais (clusters) obtidos com o algoritmo de **detecção de comunidades Louvain**.
 """)
 
 with st.expander("🔎 Métricas da Rede"):
