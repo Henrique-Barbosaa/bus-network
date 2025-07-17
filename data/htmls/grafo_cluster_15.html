@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"cluster": 15, "color": "#00ff10", "id": "AGUAS DA PRATA/SP", "label": "AGUAS DA PRATA/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "POCOS DE CALDAS/MG", "label": "POCOS DE CALDAS/MG", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "SAO JOAO DA BOA VISTA/SP", "label": "SAO JOAO DA BOA VISTA/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "VARGEM GRANDE DO SUL/SP", "label": "VARGEM GRANDE DO SUL/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "SANTO ANTONIO DO JARDIM/SP", "label": "SANTO ANTONIO DO JARDIM/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "ANDRADAS/MG", "label": "ANDRADAS/MG", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "MOGI MIRIM/SP", "label": "MOGI MIRIM/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "MOGI-GUACU/SP", "label": "MOGI-GUACU/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "GUAXUPE/MG", "label": "GUAXUPE/MG", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "MOCOCA/SP", "label": "MOCOCA/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "SAO JOSE DO RIO PARDO/SP", "label": "SAO JOSE DO RIO PARDO/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "TAPIRATIBA/SP", "label": "TAPIRATIBA/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "CASA BRANCA/SP", "label": "CASA BRANCA/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "DIVINOLANDIA/SP", "label": "DIVINOLANDIA/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "ARCEBURGO/MG", "label": "ARCEBURGO/MG", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "ESPIRITO SANTO DO PINHAL/SP", "label": "ESPIRITO SANTO DO PINHAL/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "MOGI GUACU/SP", "label": "MOGI GUACU/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "PIQUETE/SP", "label": "PIQUETE/SP", "shape": "dot", "size": 10, "title": "Cluster: 15"}, {"cluster": 15, "color": "#00ff10", "id": "GUARANESIA/MG", "label": "GUARANESIA/MG", "shape": "dot", "size": 10, "title": "Cluster: 15"}]);
+                  edges = new vis.DataSet([{"from": "AGUAS DA PRATA/SP", "id": "11990", "to": "POCOS DE CALDAS/MG", "valor_medio": 9.241428571428571, "width": 1}, {"from": "AGUAS DA PRATA/SP", "id": "12015", "to": "SAO JOAO DA BOA VISTA/SP", "valor_medio": 6.88, "width": 1}, {"from": "AGUAS DA PRATA/SP", "id": "12021", "to": "VARGEM GRANDE DO SUL/SP", "valor_medio": 12.7, "width": 1}, {"from": "SANTO ANTONIO DO JARDIM/SP", "id": "20570", "to": "ANDRADAS/MG", "valor_medio": 9.644285714285715, "width": 1}, {"from": "MOGI MIRIM/SP", "id": "12002", "to": "POCOS DE CALDAS/MG", "valor_medio": 63.2, "width": 1}, {"from": "MOGI-GUACU/SP", "id": "20559", "to": "ANDRADAS/MG", "valor_medio": 34.0, "width": 1}, {"from": "GUAXUPE/MG", "id": "27187", "to": "MOCOCA/SP", "valor_medio": 36.61, "width": 1}, {"from": "GUAXUPE/MG", "id": "27189", "to": "SAO JOSE DO RIO PARDO/SP", "valor_medio": 36.43, "width": 1}, {"from": "GUAXUPE/MG", "id": "28325", "to": "TAPIRATIBA/SP", "valor_medio": 28.198333333333334, "width": 1}, {"from": "VARGEM GRANDE DO SUL/SP", "id": "12023", "to": "POCOS DE CALDAS/MG", "valor_medio": 25.08, "width": 1}, {"from": "VARGEM GRANDE DO SUL/SP", "id": "12026", "to": "SAO JOAO DA BOA VISTA/SP", "valor_medio": 4.58, "width": 1}, {"from": "VARGEM GRANDE DO SUL/SP", "id": "27681", "to": "CASA BRANCA/SP", "valor_medio": 7.6899999999999995, "width": 1}, {"from": "SAO JOSE DO RIO PARDO/SP", "id": "20574", "to": "POCOS DE CALDAS/MG", "valor_medio": 17.765, "width": 1}, {"from": "SAO JOSE DO RIO PARDO/SP", "id": "20571", "to": "ANDRADAS/MG", "valor_medio": 23.7, "width": 1}, {"from": "SAO JOSE DO RIO PARDO/SP", "id": "20572", "to": "DIVINOLANDIA/SP", "valor_medio": 6.625, "width": 1}, {"from": "SAO JOSE DO RIO PARDO/SP", "id": "24133", "to": "MOCOCA/SP", "valor_medio": 7.15, "width": 1}, {"from": "ARCEBURGO/MG", "id": "24125", "to": "MOCOCA/SP", "valor_medio": 27.2525, "width": 1}, {"from": "ESPIRITO SANTO DO PINHAL/SP", "id": "20569", "to": "ANDRADAS/MG", "valor_medio": 13.557500000000001, "width": 1}, {"from": "SAO JOAO DA BOA VISTA/SP", "id": "12017", "to": "POCOS DE CALDAS/MG", "valor_medio": 21.22, "width": 1}, {"from": "SAO JOAO DA BOA VISTA/SP", "id": "27680", "to": "CASA BRANCA/SP", "valor_medio": 19.7, "width": 1}, {"from": "POCOS DE CALDAS/MG", "id": "20560", "to": "ANDRADAS/MG", "valor_medio": 10.5, "width": 1}, {"from": "POCOS DE CALDAS/MG", "id": "27677", "to": "CASA BRANCA/SP", "valor_medio": 35.55, "width": 1}, {"from": "POCOS DE CALDAS/MG", "id": "20566", "to": "DIVINOLANDIA/SP", "valor_medio": 8.245, "width": 1}, {"from": "POCOS DE CALDAS/MG", "id": "24130", "to": "MOCOCA/SP", "valor_medio": 20.415, "width": 1}, {"from": "POCOS DE CALDAS/MG", "id": "28518", "to": "MOGI GUACU/SP", "valor_medio": 22.938, "width": 1}, {"from": "POCOS DE CALDAS/MG", "id": "28621", "to": "PIQUETE/SP", "valor_medio": 45.5475, "width": 1}, {"from": "POCOS DE CALDAS/MG", "id": "12004", "to": "POCOS DE CALDAS/MG", "valor_medio": 5.65, "width": 1}, {"from": "DIVINOLANDIA/SP", "id": "20564", "to": "ANDRADAS/MG", "valor_medio": 9.0, "width": 1}, {"from": "DIVINOLANDIA/SP", "id": "24126", "to": "MOCOCA/SP", "valor_medio": 11.75, "width": 1}, {"from": "MOCOCA/SP", "id": "28299", "to": "GUARANESIA/MG", "valor_medio": 32.21333333333333, "width": 1}, {"from": "MOCOCA/SP", "id": "24129", "to": "MOCOCA/SP", "valor_medio": 4.25, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"forceAtlas2Based": {"gravitationalConstant": -50, "centralGravity": 0.005, "springLength": 100, "springConstant": 0.08, "avoidOverlap": 0.9}, "minVelocity": 0.75, "solver": "forceAtlas2Based"}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
