@@ -37,6 +37,7 @@ Para diferentes análises, usamos duas representações do grafo:
 
 A análise contempla tanto medidas de conectividade quanto centralidade, além de visualizações interativas para explorar os agrupamentos regionais (clusters) obtidos com o algoritmo de **detecção de comunidades Louvain**.
 """)
+st.markdown("[🔗 Grafo completo com SigmaJS](https://henrique-barbosaa.github.io/sigma-bus-network/network/)")
 
 with st.expander("🔎 Métricas da Rede"):
     metrics = compute_all_metrics(G, G_un)
