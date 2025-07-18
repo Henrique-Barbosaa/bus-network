@@ -5,33 +5,75 @@ import networkx as nx
 import seaborn as sns
 import os
 
-def show_metrics_dashboard(metrics: dict):
-    st.metric("🔹 Nº de Nós", metrics["nós"])
-    st.metric("🔸 Nº de Arestas", metrics["arestas"])
+def show_metrics_dashboard(metrics: dict, G):
     col1, col2 = st.columns(2)
+
+    col1.metric("🔹 Nº de Nós", metrics["nós"])
+    col2.metric("🔸 Nº de Arestas", metrics["arestas"])
     col1.metric("📏 Densidade", f"{metrics['densidade']:.4f}")
     col2.metric("🔗 Assortatividade", f"{metrics['assortatividade']:.4f}")
-    
-    st.markdown(f"**📐 Diâmetro da Rede**: {metrics['diâmetro']}")
-    st.markdown(f"**📍 Periferia (exemplos)**: {metrics['periferia (exemplos)']}")
-    st.markdown(f"**🌍 Clustering Global**: {metrics['clustering_global']:.4f}")
-    
-    st.markdown("### 📌 Clustering Local (exemplos):")
-    for node, val in metrics["clustering_local_exemplos"].items():
-        st.write(f"- {node}: {val:.3f}")
-    
-    st.markdown("### 🔄 Componentes Conectados")
-    st.write(f"- Fortemente conectados: {metrics['componentes_fortemente']}")
-    st.write(f"- Fracamente conectados: {metrics['componentes_fracamente']}")
+    col1.metric("📐 Diâmetro da Rede", metrics["diâmetro"])
+    col2.metric("🌍 Clustering Global", f"{metrics['clustering_global']:.4f}")
 
-def show_degree_histogram(G):
+    st.markdown("---")
+    st.markdown("### 📍 Periferia da Rede")
+    col1, col2 = st.columns(2)
+    periferia = metrics['periferia']
+
+    with col1:
+        for cidade in periferia[:5]:
+            st.write(f"- {cidade}")
+
+    with col2:
+        for cidade in periferia[5:10]:
+            st.write(f"- {cidade}")
+
+    st.markdown("---")
+    st.markdown("### 📌 Clustering Local (maiores cidades de cada região)")
+    for node, val in metrics["clustering_local"].items():
+        st.write(f"- {node}: {val:.3f}")
+
+    st.markdown("---")
+    st.markdown("### 🔄 Componentes Conectados")
+    col1, col2 = st.columns(2)
+    col1.write(f"**Fortemente conectados**: {metrics['componentes_fortemente']}")
+    col2.write(f"**Fracamente conectados**: {metrics['componentes_fracamente']}")
+
+    st.markdown("---")
+    st.markdown("### 🧯 Pontes na Rede")
+    bridges = list(metrics.get("bridges", []))
+    if bridges:
+        st.write(f"Foram encontradas **{len(bridges)}** pontes na rede.")
+        st.write("Exemplos:")
+        for bridge in bridges[:5]:
+            st.write(f"- {bridge[0]} ⇄ {bridge[1]}")
+    else:
+        st.write("Nenhuma ponte encontrada na rede.")
+
+    st.markdown("---")
+    st.markdown("### 🧯 Pontes Locais (ligadas a grandes cidades)")
+    bridges_locais = list(metrics.get("local_bridges", []))
+    if bridges_locais:
+        st.write(f"Foram encontradas **{len(bridges_locais)}** pontes locais ligadas a grandes cidades.")
+        st.write("Exemplos:")
+        for bridge in bridges_locais[:5]:
+            st.write(f"- {bridge[0]} ⇄ {bridge[1]}")
+    else:
+        st.write("Nenhuma ponte local encontrada.")
+
+    st.markdown("---")
+    st.markdown("### 📊 Distribuição de Grau")
+    st.markdown("A rede segue a distribuição de grau de uma Power Law.")
     graus = [d for n, d in G.degree()]
-    fig, ax = plt.subplots()
+    
+    fig, ax = plt.subplots(figsize=(6, 3))
     sns.histplot(graus, bins=50, kde=False, ax=ax, color="skyblue")
     ax.set_title("Distribuição de Grau dos Nós")
     ax.set_xlabel("Grau")
     ax.set_ylabel("Frequência")
+
     st.pyplot(fig)
+
 
 def show_centrality_comparison(G_un, G):
     centralities = {
@@ -84,3 +126,4 @@ def show_cluster_visualization():
     with open(os.path.join(grafo_dir, selected_file), "r", encoding="utf-8") as f:
         html_content = f.read()
     components.html(html_content, height=800, scrolling=True)
+

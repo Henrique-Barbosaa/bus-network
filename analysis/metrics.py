@@ -1,6 +1,19 @@
 import networkx as nx
 
-def compute_all_metrics(G_weak: nx.Graph, G_un: nx.Graph):
+def get_big_cities_clustering(G_un: nx.Graph):
+    cidades = ["SAO PAULO/SP", "CURITIBA/PR", "SALVADOR/BA", "MANAUS/AM", "BRASILIA/DF"]
+
+    clustering = {}
+    for cidade in cidades:
+        if cidade in G_un:
+            clustering[cidade] = nx.clustering(G_un, cidade)
+        else:
+            clustering[cidade] = "Cidade não encontrada no grafo"
+
+    return clustering
+
+
+def compute_all_metrics(G: nx.Graph, G_un: nx.Graph):
 
     num_nodes = G_un.number_of_nodes()
     num_edges = G_un.number_of_edges()
@@ -11,8 +24,14 @@ def compute_all_metrics(G_weak: nx.Graph, G_un: nx.Graph):
     peripheria = nx.periphery(G_un)
     clustering_global = nx.average_clustering(G_un)
 
-    exemplos = list(G_un.nodes())[:3]
-    clustering_local = {node: nx.clustering(G_un, node) for node in exemplos}
+
+    bridges = list(nx.bridges(G_un))
+    grandes_cidades = ["SAO PAULO/SP", "CURITIBA/PR", "SALVADOR/BA", "BRASILIA/DF", "MANAUS/AM"]
+    # Filtrar bridges locais
+    bridges_locais = [b for b in bridges if b[0] in grandes_cidades or b[1] in grandes_cidades]
+
+
+    clustering_local = get_big_cities_clustering(G_un)
 
     centralities = {
         'degree': nx.degree_centrality(G_un),
@@ -21,8 +40,8 @@ def compute_all_metrics(G_weak: nx.Graph, G_un: nx.Graph):
         'eigenvector': nx.eigenvector_centrality(G_un, max_iter=300)
     }
 
-    num_weak = len(list(nx.weakly_connected_components(G_weak)))
-    num_strong = len(list(nx.strongly_connected_components(G_weak)))
+    num_weak = len(list(nx.weakly_connected_components(G)))
+    num_strong = len(list(nx.strongly_connected_components(G)))
 
     return {
         "nós": num_nodes,
@@ -30,10 +49,12 @@ def compute_all_metrics(G_weak: nx.Graph, G_un: nx.Graph):
         "densidade": densidade,
         "assortatividade": assort,
         "diâmetro": diametro,
-        "periferia (exemplos)": peripheria[:5], # type: ignore
+        "periferia": peripheria[:10], # type: ignore
         "clustering_global": clustering_global,
-        "clustering_local_exemplos": clustering_local,
+        "clustering_local": clustering_local,
         "centralities": centralities,
         "componentes_fracamente": num_weak,
         "componentes_fortemente": num_strong,
+        "bridges": bridges,
+        "local_bridges": bridges_locais,
     }

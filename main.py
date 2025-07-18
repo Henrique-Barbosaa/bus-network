@@ -1,7 +1,7 @@
 import streamlit as st
 from analysis.graph_loader import load_graph, get_largest_weakly_connected, get_undirected_connected
 from analysis.metrics import compute_all_metrics
-from analysis.visualizations import show_metrics_dashboard, show_degree_histogram, show_centrality_comparison, show_cluster_visualization
+from analysis.visualizations import show_metrics_dashboard, show_centrality_comparison, show_cluster_visualization
 
 st.set_page_config(layout="wide")
 st.title("🚌 Conexões entre Cidades via Ônibus Rodoviário no Brasil")
@@ -21,11 +21,13 @@ Este projeto analisa a rede de conexões entre cidades brasileiras a partir de d
 - **Arestas**: Cada aresta indica a existência de **viagem direta entre duas cidades**, conforme registrado nas autorizações da ANTT. A direção da aresta representa o **sentido da viagem** (origem → destino).
 
 ### 🔍 Objetivo da Análise
-Nosso objetivo é compreender as propriedades estruturais dessa rede de mobilidade interurbana, explorando conceitos fundamentais da teoria de grafos e análise de redes complexas. Com isso, podemos responder a perguntas como:
+Compreender as propriedades estruturais dessa rede de mobilidade interurbana, explorando conceitos fundamentais da teoria de grafos e análise de redes complexas. Com isso, podemos responder a perguntas como:
 - Quais cidades são mais conectadas e centrais?
+- Qual é o nível de conectividade entre as cidades brasileiras por transporte rodoviário intermunicipal?
 - Existem agrupamentos regionais (comunidades)?
-- Como é a distribuição de conectividade entre os municípios?
-- A rede é coesa ou fragmentada?
+- A rede é densa ou esparsa? O que isso significa sobre a conectividade do sistema de ônibus?
+- Quais comunidades regionais foram identificadas na rede de ônibus?
+- Existe coerência geográfica entre os clusters detectados e as regiões reais do Brasil?
 
 ### 🧭 Tipos de Grafos Utilizados
 Para diferentes análises, usamos duas representações do grafo:
@@ -37,11 +39,8 @@ A análise contempla tanto medidas de conectividade quanto centralidade, além d
 """)
 
 with st.expander("🔎 Métricas da Rede"):
-    metrics = compute_all_metrics(G_weak, G_un)
-    show_metrics_dashboard(metrics)
-
-with st.expander("📊 Distribuição de Grau"):
-    show_degree_histogram(G_un)
+    metrics = compute_all_metrics(G, G_un)
+    show_metrics_dashboard(metrics, G)
 
 with st.expander("🏆 Centralidades"):
     show_centrality_comparison(G_un, G)

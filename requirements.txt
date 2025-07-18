@@ -6,3 +6,4 @@ pandas
 streamlit
 matplotlib
 seaborn
+powerlaw
